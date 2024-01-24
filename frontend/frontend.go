@@ -33,7 +33,7 @@ func RegisterHandlers(router *gin.Engine) {
 	}
 }
 
-func setupProxy(router *gin.Engine) {
+func setupProxy(r *gin.Engine) {
 	targetURL, err := url.Parse(fmt.Sprintf("http://localhost:%d", devPort))
 	if err != nil {
 		log.Fatal(err)
@@ -41,7 +41,7 @@ func setupProxy(router *gin.Engine) {
 
 	proxy := httputil.NewSingleHostReverseProxy(targetURL)
 
-	router.NoRoute(func(c *gin.Context) {
+	r.NoRoute(func(c *gin.Context) {
 		if !strings.HasPrefix(c.Request.URL.Path, "/api") {
 			proxy.ServeHTTP(c.Writer, c.Request)
 		} else {

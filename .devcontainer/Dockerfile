@@ -2,7 +2,11 @@ FROM mcr.microsoft.com/devcontainers/go:1-1.21-bullseye
 
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-#     && apt-get -y install --no-install-recommends <your-package-list-here>
+#     && apt-get -y install --no-install-recommends git sqlite-dev gcc musl-dev
+
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y install --no-install-recommends git gcc musl-dev sqlite3
+
 
 # [Optional] Uncomment the next lines to use go get to install anything else you need
 # USER vscode

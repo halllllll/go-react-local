@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/go-postgres
 {
-	"name": "Go & PostgreSQL",
+	"name": "Go & SQLite3(go-sqlite3 embed)",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
@@ -22,5 +22,13 @@
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "go install github.com/cosmtrek/air@latest",
 
-  "remoteUser": "root"
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	"remoteUser": "root",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"alexcvzz.vscode-sqlite"
+			]
+		}
+	}
 }

@@ -38,7 +38,8 @@ function App() {
 					</button>
 				</div>
 			</div>
-			<div>
+			<div className="horizon">
+			<button type="button">Load from DB</button>
 				<button type="button">Save to DB</button>
 			</div>
 			<p className="read-the-docs">

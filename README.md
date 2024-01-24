@@ -8,3 +8,5 @@ Info: [https://dev.to/danhawkins/embed-vite-react-in-golang-binary-with-live-rel
 - use [biomejs](https://biomejs.dev/) instead of `eslint` and `prettier`
 - substitute [bun](https://bun.sh/) for `yarn`, bundler, pacakge manager
 - original repo uses `asdf`; this repo uses `devcontainer`.
+- sqlite3 (with vscode devcontainer addon [vscode-sqlite](https://github.com/AlexCovizzi/vscode-sqlite))
+  - unmaintained
