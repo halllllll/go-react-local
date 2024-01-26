@@ -10,3 +10,6 @@ Info: [https://dev.to/danhawkins/embed-vite-react-in-golang-binary-with-live-rel
 - original repo uses `asdf`; this repo uses `devcontainer`.
 - sqlite3 (with vscode devcontainer addon [vscode-sqlite](https://github.com/AlexCovizzi/vscode-sqlite))
   - unmaintained
+
+# usage
+`make dev`
