@@ -34,11 +34,11 @@ func run(ctx context.Context)error{
 	if err != nil{
 		return err
 	}
-	db, err := db.NewDB(cfg)
+	db, cleanup, err := db.NewDB(ctx, cfg)
+	defer cleanup()
 	if err != nil {
 		return err
 	}
-	defer db.Close()
 
 	ginlog, err := os.Create(fmt.Sprintf("./%s/gin.log", cfg.Dir))
 	if err != nil {
@@ -47,6 +47,7 @@ func run(ctx context.Context)error{
 	defer ginlog.Close()
 
 	applog, err := os.Create(fmt.Sprintf("./%s/app.log", cfg.Dir))
+
 	if err != nil {
 		return err
 	}
@@ -65,7 +66,7 @@ func run(ctx context.Context)error{
 		appLogger.Error(err.Error())
 	}
 
-	router.SetRoutes(r)
+	router.SetRoutes(r, db, ctx)
 	frontend.RegisterHandlers(r)
 
 	err = r.Run(fmt.Sprintf(":%d", cfg.Port))

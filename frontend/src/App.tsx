@@ -10,9 +10,36 @@ function App() {
 		setCount(count + 1);
 	};
 
-	const decrement = () => {
+	const decrement = async () => {
 		setCount(count - 1);
 	};
+
+	const saveCount = async () => { 
+		const ret = await fetch("/api/count", {
+			method: "POST",
+			body: JSON.stringify({count})
+		})
+		const data = await ret.json()
+		if(!data.success){
+			console.error(data.error)
+			return
+		}
+		console.log(data)
+		setCount(data.newCount)
+	}
+
+	const loadCount = async () => {
+		const ret = await fetch("/api/count", {
+			method: "GET"
+		});
+		const data = await ret.json()
+		if(!data.success){
+			console.error(data.error)
+			return
+		}
+		console.log(data)
+		setCount(data.count)
+	}
 
 	return (
 		<>
@@ -39,8 +66,8 @@ function App() {
 				</div>
 			</div>
 			<div className="horizon">
-			<button type="button">Load from DB</button>
-				<button type="button">Save to DB</button>
+			<button type="button" onClick={loadCount}>Load from DB</button>
+				<button type="button" onClick={saveCount}>Save to DB</button>
 			</div>
 			<p className="read-the-docs">
 				Click on the Vite and React logos to learn more
