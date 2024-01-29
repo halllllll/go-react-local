@@ -8,6 +8,7 @@ import (
 	"log"
 	"log/slog"
 	"os"
+	"path/filepath"
 	"sample/go-react-local-app/config"
 	"sample/go-react-local-app/db"
 	"sample/go-react-local-app/frontend"
@@ -23,7 +24,14 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+var AppMode string
+
 func main() {
+	// go run時と実行ファイルの実行時でカレントディレクトリを切り替える
+	if err := os.Setenv("ENV", AppMode); err != nil {
+		log.Fatal(err)
+	}
+
 	if err := run(context.Background()); err != nil {
 		log.Printf("failed to terminated server: %v", err)
 		os.Exit(1)
@@ -35,19 +43,31 @@ func run(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	db, cleanup, err := db.NewDB(ctx, cfg)
+	var datapath string
+	if cfg.Env == "prod" {
+		gin.SetMode(gin.ReleaseMode)
+		exe, err := os.Executable()
+		if err != nil {
+			log.Fatal(err)
+		}
+		datapath = filepath.Join(filepath.Dir(exe), cfg.Dir)
+	} else {
+		datapath = filepath.Join(".", cfg.Dir)
+	}
+
+	db, cleanup, err := db.NewDB(ctx, cfg, datapath)
 	defer cleanup()
 	if err != nil {
 		return err
 	}
 
-	ginlog, err := os.Create(fmt.Sprintf("./%s/gin.log", cfg.Dir))
+	ginlog, err := os.Create(filepath.Join(datapath, "gin.log"))
 	if err != nil {
 		return err
 	}
 	defer ginlog.Close()
 
-	applog, err := os.Create(fmt.Sprintf("./%s/app.log", cfg.Dir))
+	applog, err := os.Create(filepath.Join(datapath, "app.log"))
 
 	if err != nil {
 		return err
