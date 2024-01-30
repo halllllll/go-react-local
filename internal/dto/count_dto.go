@@ -1,5 +1,5 @@
 package dto
 
 type CountInput struct {
-	Value int `json:"value" binding:"required"`
+	Value int `json:"count" binding:"required"`
 }

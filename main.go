@@ -91,7 +91,7 @@ func run(ctx context.Context) error {
 	r.Use(gin.Recovery())
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{
-			fmt.Sprintf("http://localhost:%d", cfg.Port),
+			fmt.Sprintf("http://%s", cfg.Address),
 			fmt.Sprintf("http://127.0.0.1:%d", cfg.Port),
 		},
 		AllowMethods: []string{
@@ -111,12 +111,16 @@ func run(ctx context.Context) error {
 		MaxAge:           24 * time.Hour, //
 	}))
 
-	if err := browser.OpenURL(cfg.Address); err != nil {
-		appLogger.Error(err.Error())
+	if cfg.Env == string(ProdEnv) {
+		frontend.RegisterHandlers(r)
+		if err := browser.OpenURL(fmt.Sprintf("http://%s", cfg.Address)); err != nil {
+			appLogger.Error(err.Error())
+		}
+	} else if cfg.Env == string(ProdDev) {
+		frontend.SetupProxy(r)
 	}
 
 	router.SetRoutes(r, ctrl)
-	frontend.RegisterHandlers(r)
 	err = r.Run(fmt.Sprintf(":%d", cfg.Port))
 	return err
 }

@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http/httputil"
 	"net/url"
-	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -20,20 +19,14 @@ var (
 	devPort int = 5173 // vite dev server port
 )
 
-func RegisterHandlers(router *gin.Engine) {
-	if os.Getenv("ENV") == "dev" {
-		log.Println("Running on dev mode")
-		setupProxy(router)
-	} else {
-		gin.SetMode(gin.ReleaseMode)
-
-		// 静的ファイル(embed対応)へのアクセスを設定
-		router.Use(static.ServeEmbed("dist", dist))
-
-	}
+// for production
+func RegisterHandlers(r *gin.Engine) {
+	// 静的ファイル(embed対応)へのアクセスを設定
+	r.Use(static.ServeEmbed("dist", dist))
 }
 
-func setupProxy(r *gin.Engine) {
+// for development
+func SetupProxy(r *gin.Engine) {
 	targetURL, err := url.Parse(fmt.Sprintf("http://localhost:%d", devPort))
 	if err != nil {
 		log.Fatal(err)
@@ -48,5 +41,4 @@ func setupProxy(r *gin.Engine) {
 			c.Next()
 		}
 	})
-
 }

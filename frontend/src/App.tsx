@@ -14,18 +14,22 @@ function App() {
 		setCount(count - 1);
 	};
 
-	const saveCount = async () => { 
-		const ret = await fetch("/api/count", {
-			method: "POST",
-			body: JSON.stringify({count})
-		})
-		const data = await ret.json()
-		if(!data.success){
-			console.error(data.error)
-			return
+	const saveCount = async () => {
+		try{
+			const ret = await fetch("/api/count", {
+				method: "POST",
+				body: JSON.stringify({count})
+			})
+			const data = await ret.json()
+			if(!data?.success){
+				console.error(data.error)
+				return
+			}
+			
+			setCount(data.newCount)
+		}catch(e){
+			console.error(e)
 		}
-		console.log(data)
-		setCount(data.newCount)
 	}
 
 	const loadCount = async () => {

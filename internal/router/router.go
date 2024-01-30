@@ -21,7 +21,7 @@ func SetRoutes(r *gin.Engine, ctrl controller.CountControler) {
 	{
 		// api.GET("/count", apiRegister.GetCount)
 		// api.POST("/count", apiRegister.SetCount)
-		api.GET("/count", ctrl.AddCount)
+		api.POST("/count", ctrl.AddCount)
 	}
 	r.GET("/health", healthHandler)
 }

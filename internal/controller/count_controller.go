@@ -26,16 +26,21 @@ func (c *counter) AddCount(ctx *gin.Context) {
 	var input dto.CountInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"success": false,
+			"error":   err.Error(),
 		})
 		return
 	}
 	if err := c.service.Set(ctx, input.Value); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"error":   err.Error(),
 		})
 		return
 	}
 
-	ctx.Status(http.StatusCreated)
+	ctx.JSON(http.StatusCreated, gin.H{
+		"success":  true,
+		"newCount": input.Value,
+	})
 }
