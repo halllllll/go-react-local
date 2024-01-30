@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log/slog"
 	"net/http"
 	"sample/go-react-local-app/internal/dto"
 	"sample/go-react-local-app/internal/service"
@@ -14,11 +15,13 @@ type CountControler interface {
 
 type counter struct {
 	service service.CountServicer
+	logger  *slog.Logger
 }
 
-func NewCountController(service service.CountServicer) CountControler {
+func NewCountController(service service.CountServicer, logger *slog.Logger) CountControler {
 	return &counter{
 		service: service,
+		logger:  logger,
 	}
 }
 
@@ -31,7 +34,7 @@ func (c *counter) AddCount(ctx *gin.Context) {
 		})
 		return
 	}
-	if err := c.service.Set(ctx, input.Value); err != nil {
+	if err := c.service.Set(ctx, *input.Value); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
@@ -43,4 +46,5 @@ func (c *counter) AddCount(ctx *gin.Context) {
 		"success":  true,
 		"newCount": input.Value,
 	})
+	return
 }

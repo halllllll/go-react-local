@@ -3,14 +3,11 @@ package db
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"path/filepath"
-	"sample/go-react-local-app/internal/config"
 	"time"
 )
 
-func NewDB(ctx context.Context, cfg *config.Config, datapath string) (*sql.DB, func(), error) {
-	fmt.Println(datapath)
+func NewDB(ctx context.Context, datapath string) (*sql.DB, func(), error) {
 	db, err := sql.Open("sqlite3", filepath.Join(datapath, "data.db"))
 
 	if err != nil {

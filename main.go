@@ -27,6 +27,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+// info: Makefileのbuild参照
 var AppMode string
 
 type AppEnv string
@@ -58,16 +59,23 @@ func run(ctx context.Context) error {
 		return err
 	}
 
-	db, cleanup, err := db.NewDB(ctx, cfg, datapath)
-	defer cleanup()
+	db, cleanupdb, err := db.NewDB(ctx, datapath)
+	defer cleanupdb()
 	if err != nil {
 		return err
 	}
+	appLogger, cleanuplog, err := createAppLog(datapath)
+	if err != nil {
+		return err
+	}
+	defer cleanuplog()
 
 	ctrl := controller.NewCountController(
 		service.NewCountSerivce(
 			repository.NewCountRepository(db),
+			appLogger,
 		),
+		appLogger,
 	)
 
 	ginlog, err := os.Create(filepath.Join(datapath, "gin.log"))
@@ -75,15 +83,6 @@ func run(ctx context.Context) error {
 		return err
 	}
 	defer ginlog.Close()
-
-	applog, err := os.Create(filepath.Join(datapath, "app.log"))
-
-	if err != nil {
-		return err
-	}
-	defer applog.Close()
-
-	appLogger := slog.New(slog.NewJSONHandler(io.MultiWriter(os.Stderr, applog), nil))
 
 	r := gin.Default()
 	// middlewares
@@ -140,4 +139,15 @@ func checkEnv(cfg *config.Config) (string, error) {
 		return "", fmt.Errorf("unexpected env mode")
 	}
 	return datapath, nil
+}
+
+func createAppLog(datapath string) (*slog.Logger, func(), error) {
+	applog, err := os.Create(filepath.Join(datapath, "app.log"))
+
+	if err != nil {
+		return nil, func() {}, err
+	}
+
+	appLogger := slog.New(slog.NewJSONHandler(io.MultiWriter(os.Stderr, applog), nil))
+	return appLogger, func() { _ = applog.Close() }, nil
 }

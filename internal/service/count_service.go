@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log/slog"
 	"sample/go-react-local-app/internal/models"
 	"sample/go-react-local-app/internal/repository"
 )
@@ -12,11 +13,12 @@ type CountServicer interface {
 }
 
 type countService struct {
-	repo repository.Counter
+	repo   repository.Counter
+	logger *slog.Logger
 }
 
-func NewCountSerivce(repo repository.Counter) CountServicer {
-	return &countService{repo: repo}
+func NewCountSerivce(repo repository.Counter, logger *slog.Logger) CountServicer {
+	return &countService{repo: repo, logger: logger}
 }
 
 func (cs *countService) Set(ctx context.Context, count int) error {
