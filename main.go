@@ -9,10 +9,13 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
-	"sample/go-react-local-app/config"
-	"sample/go-react-local-app/db"
 	"sample/go-react-local-app/frontend"
-	"sample/go-react-local-app/router"
+	"sample/go-react-local-app/internal/config"
+	"sample/go-react-local-app/internal/controller"
+	"sample/go-react-local-app/internal/db"
+	"sample/go-react-local-app/internal/repository"
+	"sample/go-react-local-app/internal/router"
+	"sample/go-react-local-app/internal/service"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -26,8 +29,15 @@ import (
 
 var AppMode string
 
+type AppEnv string
+
+var (
+	ProdEnv AppEnv = "prod"
+	ProdDev AppEnv = "dev"
+)
+
 func main() {
-	// go run時と実行ファイルの実行時でカレントディレクトリを切り替える
+	// go run(make dev)時と実行ファイルの実行時でカレントディレクトリを切り替える
 	if err := os.Setenv("ENV", AppMode); err != nil {
 		log.Fatal(err)
 	}
@@ -43,16 +53,9 @@ func run(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	var datapath string
-	if cfg.Env == "prod" {
-		gin.SetMode(gin.ReleaseMode)
-		exe, err := os.Executable()
-		if err != nil {
-			log.Fatal(err)
-		}
-		datapath = filepath.Join(filepath.Dir(exe), cfg.Dir)
-	} else {
-		datapath = filepath.Join(".", cfg.Dir)
+	datapath, err := checkEnv(cfg)
+	if err != nil {
+		return err
 	}
 
 	db, cleanup, err := db.NewDB(ctx, cfg, datapath)
@@ -60,6 +63,12 @@ func run(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+
+	ctrl := controller.NewCountController(
+		service.NewCountSerivce(
+			repository.NewCountRepository(db),
+		),
+	)
 
 	ginlog, err := os.Create(filepath.Join(datapath, "gin.log"))
 	if err != nil {
@@ -77,6 +86,7 @@ func run(ctx context.Context) error {
 	appLogger := slog.New(slog.NewJSONHandler(io.MultiWriter(os.Stderr, applog), nil))
 
 	r := gin.Default()
+	// middlewares
 	r.Use(sloggin.New(slog.New(slog.NewJSONHandler(io.MultiWriter(os.Stderr, ginlog), nil))))
 	r.Use(gin.Recovery())
 	r.Use(cors.New(cors.Config{
@@ -101,13 +111,29 @@ func run(ctx context.Context) error {
 		MaxAge:           24 * time.Hour, //
 	}))
 
-	if err := browser.OpenURL(fmt.Sprintf("http://localhost:%d", cfg.Port)); err != nil {
+	if err := browser.OpenURL(cfg.Address); err != nil {
 		appLogger.Error(err.Error())
 	}
 
-	router.SetRoutes(r, db, ctx)
+	router.SetRoutes(r, ctrl)
 	frontend.RegisterHandlers(r)
-
 	err = r.Run(fmt.Sprintf(":%d", cfg.Port))
 	return err
+}
+
+func checkEnv(cfg *config.Config) (string, error) {
+	var datapath string
+	if cfg.Env == string(ProdEnv) {
+		gin.SetMode(gin.ReleaseMode)
+		exe, err := os.Executable()
+		if err != nil {
+			return "", err
+		}
+		datapath = filepath.Join(filepath.Dir(exe), cfg.Dir)
+	} else if cfg.Env == string(ProdDev) {
+		datapath = filepath.Join(".", cfg.Dir)
+	} else {
+		return "", fmt.Errorf("unexpected env mode")
+	}
+	return datapath, nil
 }
