@@ -205,6 +205,7 @@ dist
 
 # and uncomment the following lines
 # .pnp.*
+.DS_Store
 
 # End of https://www.toptal.com/developers/gitignore/api/go,visualstudiocode,yarn,node
 
