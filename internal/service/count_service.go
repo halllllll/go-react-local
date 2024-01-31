@@ -11,6 +11,7 @@ import (
 type CountServicer interface {
 	Set(context.Context, int) error
 	Get(context.Context, int) (*models.Count, error)
+	GetAll(context.Context) (*models.Counts, error)
 }
 
 type countService struct {
@@ -34,8 +35,10 @@ func (cs *countService) Set(ctx context.Context, count int) error {
 }
 
 func (cs *countService) Get(ctx context.Context, id int) (*models.Count, error) {
-	// err := cs.tx.DoTx(ctx, func(context.Context) error{
-	// 	return cs.repo.FindById(ctx, models.CountId(id))
-	// })
+	// getほにゃらら系はとりあえずトランザクションを貼らない
 	return cs.repo.FindById(ctx, models.CountId(id))
+}
+
+func (cs *countService) GetAll(ctx context.Context) (*models.Counts, error) {
+	return cs.repo.FindAll(ctx)
 }

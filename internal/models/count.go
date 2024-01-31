@@ -13,4 +13,4 @@ type Count struct {
 	Updated time.Time  `json:"updated" db:"updated_at"`
 }
 
-type Counts *[]Count
+type Counts []*Count

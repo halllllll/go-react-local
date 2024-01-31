@@ -13,6 +13,7 @@ import (
 type CountControler interface {
 	AddCount(ctx *gin.Context)
 	GetCount(ctx *gin.Context)
+	GetCounts(ctx *gin.Context)
 }
 
 type counter struct {
@@ -73,4 +74,17 @@ func (c *counter) GetCount(ctx *gin.Context) {
 		"updated": count.Updated,
 	})
 	return
+}
+
+// GetCounts implements CountControler.
+func (c *counter) GetCounts(ctx *gin.Context) {
+	counts, err := c.service.GetAll(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": counts,
+	})
 }
