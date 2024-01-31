@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"log/slog"
 	"net/http"
 	"sample/go-react-local-app/internal/common/dto"
@@ -60,11 +59,18 @@ func (c *counter) GetCount(ctx *gin.Context) {
 		})
 		return
 	}
-	c.logger.Info(fmt.Sprintf("id(dummy): %d", countId))
 
+	count, err := c.service.Get(ctx, int(countId))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"id":    countId,
-		"value": 10000000,
+		"id":      countId,
+		"value":   count.Val,
+		"created": count.Created,
+		"updated": count.Updated,
 	})
 	return
 }

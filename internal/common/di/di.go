@@ -10,7 +10,7 @@ import (
 
 func InitCount(db *sql.DB, logger *slog.Logger) controller.CountControler {
 	tx := repository.NewTransaction(db)
-	r := repository.NewCountRepository(db)
+	r := repository.NewCountRepository(db, logger)
 	s := service.NewCountSerivce(r, tx, logger)
 
 	return controller.NewCountController(s, logger)

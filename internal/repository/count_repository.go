@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log/slog"
 	"sample/go-react-local-app/internal/models"
 )
 
@@ -14,12 +15,14 @@ type Counter interface {
 }
 
 type counterRepository struct {
-	db *sql.DB
+	db  *sql.DB
+	log *slog.Logger
 }
 
-func NewCountRepository(db *sql.DB) Counter {
+func NewCountRepository(db *sql.DB, logger *slog.Logger) Counter {
 	return &counterRepository{
-		db: db,
+		db:  db,
+		log: logger,
 	}
 }
 
@@ -38,18 +41,25 @@ func (cr *counterRepository) Add(ctx context.Context, value models.CountValue) e
 // FindById implements Counter.
 func (cr *counterRepository) FindById(ctx context.Context, id models.CountId) (*models.Count, error) {
 	// トランザクション処理はrollback,commitをtransaction.DoTxでやってるので不要
-
+	// と思ったけどGetほにゃらら系は値を返したいのでtransactionインターフェースを使わず、関数内でトランザクションを貼ることにする
+	tx, err := cr.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
 	var count models.Count
 	stmt := `
 		SELECT * FROM count WHERE count_id = ?
 	`
-	if err := cr.db.QueryRowContext(ctx, stmt, id).Scan(&count); err != nil {
+	if err := tx.QueryRowContext(ctx, stmt, id).Scan(&count.Id, &count.Val, &count.Created, &count.Updated); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("data not found")
 		} else {
 			return nil, err
 		}
 	}
-
+	if err := tx.Commit(); err != nil {
+		return nil, err
+	}
 	return &count, nil
 }

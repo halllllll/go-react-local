@@ -34,5 +34,8 @@ func (cs *countService) Set(ctx context.Context, count int) error {
 }
 
 func (cs *countService) Get(ctx context.Context, id int) (*models.Count, error) {
+	// err := cs.tx.DoTx(ctx, func(context.Context) error{
+	// 	return cs.repo.FindById(ctx, models.CountId(id))
+	// })
 	return cs.repo.FindById(ctx, models.CountId(id))
 }
