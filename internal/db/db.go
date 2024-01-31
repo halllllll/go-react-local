@@ -24,10 +24,10 @@ func NewDB(ctx context.Context, datapath string) (*sql.DB, func(), error) {
 
 	// init
 	stmt := `CREATE TABLE IF NOT EXISTS count (
-				id INTEGER PRIMARY KEY AUTOINCREMENT,
-				value INTEGER NOT NULL,
-				created TIMESTAMP DEFAULT (datetime(CURRENT_TIMESTAMP,'localtime')),
-				updated TIMESTAMP DEFAULT (datetime(CURRENT_TIMESTAMP,'localtime'))
+				count_id INTEGER PRIMARY KEY AUTOINCREMENT,
+				count_value INTEGER NOT NULL,
+				created_at TIMESTAMP DEFAULT (datetime(CURRENT_TIMESTAMP,'localtime')),
+				updated_at TIMESTAMP DEFAULT (datetime(CURRENT_TIMESTAMP,'localtime'))
 			)`
 
 	_, err = db.ExecContext(ctx, stmt)

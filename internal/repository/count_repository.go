@@ -24,18 +24,11 @@ func NewCountRepository(db *sql.DB) Counter {
 }
 
 func (cr *counterRepository) Add(ctx context.Context, value models.CountValue) error {
-	tx, err := cr.db.BeginTx(ctx, nil)
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback()
+	// トランザクション処理はrollback,commitをtransaction.DoTxでやってるので不要
 
-	stmt := `INSERT INTO count(value) VALUES (?)`
-	_, err = tx.ExecContext(ctx, stmt, value)
+	stmt := `INSERT INTO count(count_value) VALUES (?)`
+	_, err := cr.db.ExecContext(ctx, stmt, value)
 	if err != nil {
-		return err
-	}
-	if err := tx.Commit(); err != nil {
 		return err
 	}
 
@@ -44,18 +37,13 @@ func (cr *counterRepository) Add(ctx context.Context, value models.CountValue) e
 
 // FindById implements Counter.
 func (cr *counterRepository) FindById(ctx context.Context, id models.CountId) (*models.Count, error) {
-	tx, err := cr.db.BeginTx(ctx, nil)
-
-	if err != nil {
-		return nil, err
-	}
-	defer tx.Rollback()
+	// トランザクション処理はrollback,commitをtransaction.DoTxでやってるので不要
 
 	var count models.Count
 	stmt := `
-		SELECT * FROM count WHERE id = ?
+		SELECT * FROM count WHERE count_id = ?
 	`
-	if err := tx.QueryRowContext(ctx, stmt, id).Scan(&count); err != nil {
+	if err := cr.db.QueryRowContext(ctx, stmt, id).Scan(&count); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("data not found")
 		} else {
@@ -63,8 +51,5 @@ func (cr *counterRepository) FindById(ctx context.Context, id models.CountId) (*
 		}
 	}
 
-	if err := tx.Commit(); err != nil {
-		return nil, err
-	}
 	return &count, nil
 }

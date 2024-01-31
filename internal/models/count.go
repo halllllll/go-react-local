@@ -9,10 +9,10 @@ type CountCreated time.Time
 type CountUpdated time.Time
 
 type Count struct {
-	Id      CountId      `json:"id"`
-	Val     CountValue   `json:"value"`
-	Created CountCreated `json:"created"`
-	Updated CountUpdated `json:"updated"`
+	Id      CountId      `json:"id" db:"count_id"`
+	Val     CountValue   `json:"value" db:"count_value"`
+	Created CountCreated `json:"created" db:"created_at"`
+	Updated CountUpdated `json:"updated" db:"updated_at"`
 }
 
 type Counts *[]Count
