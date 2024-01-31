@@ -58,13 +58,14 @@ func (cfg *Config) CheckEnv() (string, error) {
 }
 
 func (cfg *Config) CreateAppLog(datapath string) (map[string]*slog.Logger, func(), error) {
-	applog, err := os.Create(filepath.Join(datapath, applogName))
+
+	applog, err := os.OpenFile(filepath.Join(datapath, applogName), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 
 	if err != nil {
 		return nil, func() {}, err
 	}
 
-	ginlog, err := os.Create(filepath.Join(datapath, ginlogName))
+	ginlog, err := os.OpenFile(filepath.Join(datapath, ginlogName), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		return nil, func() {}, err
 	}
