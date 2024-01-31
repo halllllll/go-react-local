@@ -11,6 +11,7 @@ Info: [https://dev.to/danhawkins/embed-vite-react-in-golang-binary-with-live-rel
 - use [biomejs](https://biomejs.dev/) instead of `eslint` and `prettier`
 - substitute [bun](https://bun.sh/) for `yarn`, bundler, pacakge manager
 - sqlite3
+  - simple Create and Read data
 - open browser
 
 # usage
