@@ -20,7 +20,7 @@ function App() {
 				method: "POST",
 				body: JSON.stringify({count})
 			})
-			const data = await ret.json()
+			const data = await ret.json()			
 			if(!data?.success){
 				console.error(data.error)
 				return

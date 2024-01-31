@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"path/filepath"
 	"time"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func NewDB(ctx context.Context, datapath string) (*sql.DB, func(), error) {

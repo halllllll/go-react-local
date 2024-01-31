@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"sample/go-react-local-app/internal/models"
 	"sample/go-react-local-app/internal/repository"
+	"sample/go-react-local-app/internal/transaction"
 )
 
 type CountServicer interface {
@@ -13,16 +14,23 @@ type CountServicer interface {
 }
 
 type countService struct {
-	repo   repository.Counter
-	logger *slog.Logger
+	repo repository.Counter
+	tx   transaction.Transaction
+	log  *slog.Logger
 }
 
-func NewCountSerivce(repo repository.Counter, logger *slog.Logger) CountServicer {
-	return &countService{repo: repo, logger: logger}
+func NewCountSerivce(repo repository.Counter, tx transaction.Transaction, logger *slog.Logger) CountServicer {
+	return &countService{repo: repo, tx: tx, log: logger}
 }
 
 func (cs *countService) Set(ctx context.Context, count int) error {
-	return cs.repo.Add(ctx, models.CountValue(count))
+	err := cs.tx.DoTx(ctx, func(ctx context.Context) error {
+		return cs.repo.Add(ctx, models.CountValue(count))
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (cs *countService) Get(ctx context.Context, id int) (*models.Count, error) {
