@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -54,7 +55,15 @@ func (cfg *Config) CheckEnv() (string, error) {
 	} else {
 		return "", fmt.Errorf("unexpected env mode")
 	}
+
+	// なかったらつくる
+	if err := os.Mkdir(datapath, os.ModePerm); err != nil {
+		if !errors.Is(err, os.ErrExist) {
+			return "", err
+		}
+	}
 	return datapath, nil
+
 }
 
 func (cfg *Config) CreateAppLog(datapath string) (map[string]*slog.Logger, func(), error) {
