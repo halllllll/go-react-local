@@ -5,8 +5,8 @@ export const getCountsSelector = (data: GetCountsResponse) => {
     return {
       id: d.id,
       value: d.value,
-      created: d.created.toLocaleString("ja-jp"),
-      updated: d.updated.toLocaleString()
+      created: new Date(d.created).toLocaleString(),
+      updated: new Date(d.updated).toLocaleString()
     }
   })
 }

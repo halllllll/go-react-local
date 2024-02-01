@@ -13,6 +13,7 @@ export const postCount = async (
     method: "POST",
     body: JSON.stringify(data),
   });
+  if(!res.ok)throw new Error(`${res.status} ${res.statusText}`)
   return await res.json();
 };
 

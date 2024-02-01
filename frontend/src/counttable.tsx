@@ -33,7 +33,7 @@ const CountTable: FC = () => {
   );
 };
 
-export const CountList = () => {
+export const CountListComponent = () => {
   return (
     <div>
       <h3>count list</h3>

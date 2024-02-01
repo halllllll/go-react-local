@@ -41,7 +41,6 @@
   color: #888;
 }
 
-
 .horizon {
   display: flex;
   align-items: center;
@@ -49,6 +48,42 @@
   row-gap: 10px;
 }
 
-.horizon *{
+.horizon * {
   margin: 0 5px;
+}
+
+/* ChatGPTが追加したテーブルスタイリング */
+table {
+  width: 100%;
+  text-align: left;
+  padding: 8px;
+  color: var(--table-text-color); /* カスタムプロパティを使用 */
+  background-color: var(--table-background-color); /* カスタムプロパティを使用 */
+}
+
+th {
+  background-color: var(--table-background-color); /* カスタムプロパティを使用 */
+}
+
+tr:nth-child(even) {
+  background-color: var(--table-stripe-color); /* カスタムプロパティを使用 */
+}
+
+tr:hover {
+  background-color: var(--table-hover-color); /* カスタムプロパティを使用 */
+}
+
+.error-message {
+  color: #ff0000;
+  /* 赤色で注意を引く */
+  background-color: #fff0f0;
+  /* 薄い赤色の背景でエラーを柔らかく示す */
+  border: 1px solid #ff0000;
+  /* 赤色の境界線で明確にエラーを示す */
+  padding: 10px;
+  /* 内側の余白 */
+  margin: 10px 0;
+  /* 外側の余白 */
+  border-radius: 5px;
+  /* 角の丸み */
 }

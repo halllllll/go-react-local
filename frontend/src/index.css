@@ -11,6 +11,16 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* ChatGPTが提案したテーブルのカラーテーマ変数 */
+  --table-text-color: #213547;
+  /* テーブルのテキスト色 */
+  --table-background-color: #ffffff;
+  /* テーブルの背景色 */
+  --table-stripe-color: #f9f9f9;
+  /* ストライプ行の背景色 */
+  --table-hover-color: #eaeaea;
+  /* ホバー時の行の背景色 */
 }
 
 a {
@@ -18,6 +28,7 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -46,9 +57,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -59,10 +72,22 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* ChatGPTが提案したダークモード用のテーブルカラーテーマ変数 */
+    --table-text-color: rgba(255, 255, 255, 0.87);
+    --table-background-color: #242424;
+    --table-stripe-color: #1e1e1e;
+    --table-hover-color: #333333;
   }
 }

@@ -1,7 +1,6 @@
-import { useMutation, useQuery, useQueryClient,  useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { countKeys } from "./key";
 import { getCounts, postCount } from "./functions";
-import { GetCountsResponse } from "./type";
 import { getCountsSelector } from "./selectors";
 
 export const useGetCounts = () => {

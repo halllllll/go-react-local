@@ -1,16 +1,15 @@
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { usePostCount } from "./service/count";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-import { ErrorBoundary } from "react-error-boundary";
-import { ErrorFallback } from "./error-boundary";
-import { CountList } from "./counttable";
+import { CountListComponent } from "./counttable";
 
 function App() {
   const [count, setCount] = useState(0);
   const { mutate: postCountMutate } = usePostCount();
-  const [on, setOn] = useState<boolean>(false);
+  const [showList, setShowList] = useState<boolean>(false);
+  const [showErrorMsg, setShowErrMsg] = useState<boolean>(false);
 
   const increment = (val: number | any) => {
     if (typeof val === "number") {
@@ -37,9 +36,12 @@ function App() {
         },
         onSuccess: () => {
           console.log("done!");
+          setShowErrMsg(false);
         },
-        onError: () => {
+        onError: (err) => {
           console.error("failed...");
+          console.log(err);
+          setShowErrMsg(true);
         },
       }
     );
@@ -77,16 +79,19 @@ function App() {
         </div>
       </div>
       <div className="card">
+        {showErrorMsg && (
+          <div className="error-message">サーバーエラーです</div>
+        )}
         <button type="button" onClick={saveCount}>
           Save to DB
         </button>
       </div>
       <div className="card">
-        <button type="button" onClick={() => setOn(!on)}>
-          Load from DB
+        <button type="button" onClick={() => setShowList(!showList)}>
+          {showList ? "close" : "Show List"}
         </button>
       </div>
-      {on && <CountList />}
+      {showList && <CountListComponent />}
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
