@@ -23,5 +23,4 @@ func SetCountRoutes(r *gin.Engine, db *sql.DB, logger *slog.Logger) {
 		api.GET("/count", countCtrl.GetCounts)
 	}
 	r.GET("/health", healthHandler)
-
 }

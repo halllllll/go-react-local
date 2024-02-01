@@ -1,13 +1,19 @@
 import { useState } from "react";
+import { usePostCount } from "./service/count";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 
 function App() {
 	const [count, setCount] = useState(0);
+	const {mutate: postCountMutate} = usePostCount()
 
-	const increment = () => {
-		setCount(count + 1);
+	const increment = (val: number | any) => {
+		if(typeof val === "number" ){
+			setCount(count + val)
+		}else{
+			setCount(count + 1)
+		};
 	};
 
 	const decrement = async () => {
@@ -15,21 +21,26 @@ function App() {
 	};
 
 	const saveCount = async () => {
-		try{
-			const ret = await fetch("/api/count", {
-				method: "POST",
-				body: JSON.stringify({count})
-			})
-			const data = await ret.json()			
-			if(!data?.success){
-				console.error(data.error)
-				return
-			}
+		// try{
+		// 	const ret = await fetch("/api/count", {
+		// 		method: "POST",
+		// 		body: JSON.stringify({count})
+		// 	})
+		// 	const data = await ret.json()			
+		// 	if(!data?.success){
+		// 		console.error(data.error)
+		// 		return
+		// 	}
 			
-			setCount(data.newCount)
-		}catch(e){
-			console.error(e)
-		}
+		// 	setCount(data.newCount)
+		// }catch(e){
+		// 	console.error(e)
+		// }
+		postCountMutate({count}, {
+			onSettled: () => {console.log("fire")},
+			onSuccess: () => {console.log("done!")},
+			onError: () => {console.log("failed...")}
+		})
 	}
 
 	const loadCount = async () => {
@@ -56,16 +67,23 @@ function App() {
 				</a>
 			</div>
 			<h1>Vite + React</h1>
+			<h2>{">> on Go(Gin) local server <<"}</h2>
 			<div className="card">
 				<div className="horizon">
+					<button type="button" onClick={() => increment(-10)}>
+						{"-10"}
+					</button>
 					<button type="button" onClick={decrement}>
 						-
 					</button>
 					<strong>
-						COUNT IS " <u>{count}</u> "
+						" <u>{count}</u> "
 					</strong>
 					<button type="button" onClick={increment}>
 						+
+					</button>
+					<button type="button" onClick={() => increment(10)}>
+						{"10"}
 					</button>
 				</div>
 			</div>
