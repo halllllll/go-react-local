@@ -1,12 +1,17 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient,  useSuspenseQuery } from "@tanstack/react-query";
 import { countKeys } from "./key";
 import { getCounts, postCount } from "./functions";
+import { GetCountsResponse } from "./type";
+import { getCountsSelector } from "./selectors";
 
 export const useGetCounts = () => {
-  const { data, isPending, isError } = useQuery({
+  const { data, isPending, isError } = useSuspenseQuery({
     queryKey: countKeys.lists(),
     queryFn: getCounts,
+    select: getCountsSelector
   });
+
+  if(isError)throw isError
 
   return { data, isPending, isError };
 };
