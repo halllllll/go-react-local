@@ -4,7 +4,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "./error-boundary";
 
 const CountTable: FC = () => {
-  const { data: counts, isPending, isError } = useGetCounts();
+  const { data: counts } = useGetCounts();
   return (
     <div>
       <table>

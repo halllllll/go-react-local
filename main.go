@@ -91,7 +91,7 @@ func run(ctx context.Context) error {
 
 	router.SetCountRoutes(r, db, logger[string(config.AppLog)])
 	if cfg.Env == config.EnvProd {
-		// フロントの埋め込みファイル参照はルーティング設定のあとにしないと404が返る
+		// フロントの埋め込みファイル参照はルーティング設定のあとにしないと意図しない404が返る
 		frontend.RegisterHandlers(r)
 		if err := browser.OpenURL(fmt.Sprintf("http://%s", cfg.Address)); err != nil {
 			logger[string(config.AppLog)].Error(err.Error())
@@ -100,8 +100,7 @@ func run(ctx context.Context) error {
 		frontend.SetupProxy(r)
 	}
 
-	// err = r.Run(fmt.Sprintf(":%d", cfg.Port))
-	// graceful shutdownをしてみたが効いてる感じしない
+	// graceful shutdown(air環境だと動作しないっぽい　ビルド後だと動作する)
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.Port),
 		Handler: r,

@@ -12,7 +12,7 @@ import (
 type Counter interface {
 	Add(context.Context, models.CountValue) error
 	FindById(context.Context, models.CountId) (*models.Count, error)
-	FindAll(context.Context) (*models.Counts, error)
+	FindAll(context.Context) (*[]models.Count, error)
 }
 
 type counterRepository struct {
@@ -66,8 +66,8 @@ func (cr *counterRepository) FindById(ctx context.Context, id models.CountId) (*
 }
 
 // FindAll implements Counter.
-func (cr *counterRepository) FindAll(ctx context.Context) (*models.Counts, error) {
-	var counts models.Counts
+func (cr *counterRepository) FindAll(ctx context.Context) (*[]models.Count, error) {
+	var counts []models.Count
 	tx, err := cr.db.BeginTx(ctx, nil)
 	if err != nil {
 		return nil, err
@@ -85,7 +85,7 @@ func (cr *counterRepository) FindAll(ctx context.Context) (*models.Counts, error
 		if err := rows.Scan(&c.Id, &c.Val, &c.Created, &c.Updated); err != nil {
 			cr.log.Error("getall error", err.Error(), "failedId", &c.Id)
 		}
-		counts = append(counts, c)
+		counts = append(counts, *c)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
