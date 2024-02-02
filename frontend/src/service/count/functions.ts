@@ -28,9 +28,7 @@ export const getCount = async (
 };
 
 export const getCounts = async (): Promise<GetCountsResponse> => {
-  console.log("uii~")
-  await new Promise(resolve => setTimeout(resolve, 3000))
-  console.log("~iiu")
+  await new Promise(resolve => setTimeout(resolve, 1000))
   const res = await fetch(`/api/count`, {
     method: "GET",
   });

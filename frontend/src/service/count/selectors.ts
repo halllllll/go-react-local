@@ -1,7 +1,8 @@
 import { GetCountsResponse } from "./type";
 
-export const getCountsSelector = (data: GetCountsResponse) => {
-  return data.data.map((d) => {
+export const getCountsSelector = (body: GetCountsResponse) => {
+
+  const data = body.data.map((d) => {
     return {
       id: d.id,
       value: d.value,
@@ -9,4 +10,6 @@ export const getCountsSelector = (data: GetCountsResponse) => {
       updated: new Date(d.updated).toLocaleString()
     }
   })
+
+  return {data, amount: body.amount}
 }

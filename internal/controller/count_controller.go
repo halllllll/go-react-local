@@ -85,6 +85,7 @@ func (c *counter) GetCounts(ctx *gin.Context) {
 		})
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"data": counts,
+		"amount": len(*counts),
+		"data":   counts,
 	})
 }

@@ -8,7 +8,7 @@ type count = {
 
 export type GetCountResponse = count;
 export type GetCountRequest = { id: number };
-export type GetCountsResponse = {data: count[]};
+export type GetCountsResponse = {data: count[], amount: number};
 
 export type PostCountRequest = { count: number };
 export type PostCountResponse = count;

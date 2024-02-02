@@ -4,9 +4,10 @@ import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "./error-boundary";
 
 const CountTable: FC = () => {
-  const { data: counts } = useGetCounts();
+  const { data: countsData } = useGetCounts();
   return (
     <div>
+      <p>{`amont: ${countsData.amount}`}</p>
       <table>
         <thead>
           <tr>
@@ -17,7 +18,7 @@ const CountTable: FC = () => {
           </tr>
         </thead>
         <tbody>
-          {counts.map((count) => {
+          {countsData.data.map((count) => {
             return (
               <tr key={count.id}>
                 <td>{count.id}</td>
