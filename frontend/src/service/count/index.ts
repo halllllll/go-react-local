@@ -3,14 +3,15 @@ import { countKeys } from "./key";
 import { getCounts, postCount } from "./functions";
 import { getCountsSelector } from "./selectors";
 
+
 export const useGetCounts = () => {
-  const { data, isPending, isError } = useSuspenseQuery({
+  const { data, isPending, isError, error } = useSuspenseQuery({
     queryKey: countKeys.lists(),
     queryFn: getCounts,
-    select: getCountsSelector
+    select: getCountsSelector,
   });
 
-  if(isError)throw isError
+  if(isError) throw error;
 
   return { data, isPending, isError };
 };

@@ -11,6 +11,7 @@ function App() {
   const [showList, setShowList] = useState<boolean>(false);
   const [showErrorMsg, setShowErrMsg] = useState<boolean>(false);
 
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const increment = (val: number | any) => {
     if (typeof val === "number") {
       setCount(count + val);
@@ -19,6 +20,7 @@ function App() {
     }
   };
 
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const decrement = (val: number | any) => {
     if (typeof val === "number") {
       setCount(count - val);
