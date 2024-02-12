@@ -67,7 +67,6 @@ func (cfg *Config) CheckEnv() (string, error) {
 }
 
 func (cfg *Config) CreateAppLog(datapath string) (map[string]*slog.Logger, func(), error) {
-
 	applog, err := os.OpenFile(filepath.Join(datapath, applogName), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 
 	if err != nil {
@@ -78,7 +77,6 @@ func (cfg *Config) CreateAppLog(datapath string) (map[string]*slog.Logger, func(
 	if err != nil {
 		return nil, func() {}, err
 	}
-	defer ginlog.Close()
 	appLogger := slog.New(slog.NewJSONHandler(io.MultiWriter(os.Stderr, applog), nil))
 	ginLogger := slog.New(slog.NewJSONHandler(io.MultiWriter(os.Stderr, ginlog), nil))
 

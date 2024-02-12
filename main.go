@@ -75,6 +75,8 @@ func run(ctx context.Context) error {
 		AllowMethods: []string{
 			"POST",
 			"GET",
+			"PUT",
+			"DELETE",
 			"OPTIONS", // for preflight request
 		},
 		AllowHeaders: []string{
@@ -84,6 +86,11 @@ func run(ctx context.Context) error {
 			"Content-Length",
 			"Accept-Encoding",
 			"Authorization",
+			"X-CSRF-Token",
+			"accept",
+			"origin",
+			"Cache-Control",
+			"X-Request-With",
 		},
 		AllowCredentials: true,           // need cookie
 		MaxAge:           24 * time.Hour, //

@@ -22,10 +22,11 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false, /* 基本trueだがopenapi生成のコードがビルドできないのでビルド時のみ変える */
+    "noUnusedParameters": false, /* 同上 */
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
+  "exclude": ["src/**/openapi/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

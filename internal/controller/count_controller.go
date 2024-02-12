@@ -56,7 +56,8 @@ func (c *counter) GetCount(ctx *gin.Context) {
 	countId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid id",
+			"success": false,
+			"error":   "invalid id",
 		})
 		return
 	}
@@ -64,14 +65,13 @@ func (c *counter) GetCount(ctx *gin.Context) {
 	count, err := c.service.Get(ctx, int(countId))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
+			"success": false,
+			"error":   err.Error(),
 		})
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"id":      countId,
-		"value":   count.Val,
-		"created": count.Created,
-		"updated": count.Updated,
+		"success": true,
+		"data":    count,
 	})
 	return
 }

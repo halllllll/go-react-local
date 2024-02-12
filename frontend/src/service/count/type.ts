@@ -1,14 +1,8 @@
-// dto
-type count = {
-  id: number;
-  value: number;
-  created: Date;
-  updated: Date;
-};
+import { Count } from "@/openapi";
 
-export type GetCountResponse = count;
+export type GetCountResponse = Count;
 export type GetCountRequest = { id: number };
-export type GetCountsResponse = {data: count[], amount: number};
+export type GetCountsResponse = { data: Count[]; amount: number };
 
 export type PostCountRequest = { count: number };
-export type PostCountResponse = count;
+export type PostCountResponse = Count;

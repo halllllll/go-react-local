@@ -1,0 +1,196 @@
+openapi: "3.0.3"
+
+info:
+  title: "Go x React local"
+  description: "practice environment on local server development"
+  version: "1.0.0"
+servers:
+  - url: http://{host}:{port}/api
+    description: "dev env (port number is defined `config.go``)"
+    variables:
+      host:
+        default: localhost
+      port:
+        default: '3056'
+tags:
+  - name: "count"
+    description: "count api"
+
+paths:
+  "/count":
+    get:
+      summary: "get all count data"
+      description: "get all count whole data"
+      tags: ["count"]
+      operationId: getAllCount
+      deprecated: false
+      responses:
+        "200":
+          description: "ok"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/counts_allOf"
+        "3XX":
+          description: "omg"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerNGResponse"
+        "4XX":
+          description: "omg"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerNGResponse"
+        "5XX":
+          description: "omg"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerNGResponse"
+    post:
+      summary: "post a count"
+      description: "post a count -> create/insert a count data. return that data with 201 when successed"
+      tags:
+        - "count"
+      operationId: createCount
+      deprecated: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/postCount"
+
+      responses:
+        '201':
+          description: "new count data"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatedCountResponse"
+        "3XX":
+          $ref: "#/components/responses/300"
+        "5XX":
+          $ref: "#/components/responses/500"
+
+
+  "/count/{count_id}":
+    get:
+      summary: "get a count"
+      description: "get a count"
+      tags:
+        - "count"
+      operationId: getCountById
+      parameters:
+        - name: count_id
+          description: "count id"
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "ok"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/count"
+
+            
+
+components:
+  schemas:
+    postCount:
+      description: "post count data from frontend"
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+          example: 10
+    count:
+      description: "a count"
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 100
+        value:
+          type: integer
+          format: int64
+          example: -200
+        created:
+          type: string
+          format: date-time
+          description: "creation data"
+          example: "2024-02-02T14:17:19Z"
+        updated:
+          type: string
+          format: date-time
+          description: "update data"
+          example: "2024-02-02T14:17:19Z"
+      required:
+        - id
+        - value
+        - created
+        - updated
+    count_one:
+      description: "get a count response"
+      type: object
+      example: null
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: "#/components/schemas/count"
+    counts_allOf:
+      description: "all counts"
+      type: object
+      example: null
+      properties:
+        amount:
+          type: integer
+          format: int64
+          example: 100
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/count"
+    ServerNGResponse:
+      description: "some error"
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        error:
+          type: string
+    CreatedCountResponse:
+      description: "success post /api/count"
+      type: object
+      properties:
+        success::
+          type: boolean
+          example: true
+        newCount:
+          type: integer
+          format: int64
+          example: 64
+  responses:
+    300:
+      description: "300"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ServerNGResponse"
+    500:
+      description: "500"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ServerNGResponse"
+
