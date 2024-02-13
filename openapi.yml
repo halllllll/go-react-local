@@ -1,5 +1,4 @@
 openapi: "3.0.3"
-
 info:
   title: "Go x React local"
   description: "practice environment on local server development"
@@ -36,19 +35,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ServerNGResponse"
+                $ref: "#/components/schemas/Server3XXResponse"
         "4XX":
           description: "omg"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ServerNGResponse"
+                $ref: "#"
         "5XX":
           description: "omg"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ServerNGResponse"
+                $ref: "#/components/schemas/Server5XXResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     post:
       summary: "post a count"
       description: "post a count -> create/insert a count data. return that data with 201 when successed"
@@ -74,6 +79,12 @@ paths:
           $ref: "#/components/responses/300"
         "5XX":
           $ref: "#/components/responses/500"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 
   "/count/{count_id}":
@@ -97,6 +108,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/count"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
             
 
@@ -110,6 +127,8 @@ components:
           type: integer
           format: int64
           example: 10
+      required:
+        - count
     count:
       description: "a count"
       type: object
@@ -160,7 +179,25 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/count"
-    ServerNGResponse:
+    Server3XXResponse:
+      description: "some error"
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        error:
+          type: string
+    Server4XXResponse:
+      description: "some error"
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        error:
+          type: string
+    Server5XXResponse:
       description: "some error"
       type: object
       properties:
@@ -180,17 +217,35 @@ components:
           type: integer
           format: int64
           example: 64
+    Error:
+      description: "DEFAULT error response schema"
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      required:
+        - code
+        - message
+
   responses:
     300:
       description: "300"
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ServerNGResponse"
+            $ref: "#/components/schemas/Server3XXResponse"
+    400:
+      description: "400"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Server4XXResponse"
     500:
       description: "500"
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ServerNGResponse"
-
+            $ref: "#/components/schemas/Server5XXResponse"

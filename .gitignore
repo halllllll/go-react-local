@@ -4,6 +4,7 @@
 ## App
 data/*
 **/openapi/*
+**/ogen_openapi/*
 
 
 
