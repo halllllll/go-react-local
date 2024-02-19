@@ -1,3 +1,7 @@
+include .env
+
+PORT ?= ${PORT}
+
 .PHONY: build frontend_build build_mac build_win build_linux
 
 current_dir := $(shell pwd)
@@ -17,7 +21,7 @@ build_win: frontend_build
 build_linux: frontend_build
 	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X main.AppMode=prod" -trimpath -o ./bin/linux/go-react-local ./main.go
 
-dev:
+dev: port_check
 	cd frontend && bun install && bun run dev & ENV=dev air && fg
 
 oas_ts_fetch:
@@ -43,9 +47,21 @@ __oas_go_kiota:
 	-o /local/kiota_test \
 	-n sample/go-react-local-app/openapi
 
-# oganを使いたいがうまく組み込めない
+# oganを使いたいがginにうまく組み込むやり方がわからない
 oas_ogen:
 	ogen -package openapi -target ${current_dir}/internal/ogen_openapi -clean ${current_dir}/openapi.yml
 
 copy_data:
 	cp -r ./data ./bin/$(PLATFORM)/
+
+
+port_check:
+	@echo "Checking the availability of port $(PORT)..."
+	@lsof -i :$(PORT) > /dev/null 2>&1; if [ $$? -eq 0 ]; then \
+		echo "👺 Error: Port $(PORT) is already in use."; \
+		echo "Details of the process occupying the port:"; \
+		lsof -i :$(PORT) | awk 'NR>1 {print "PID: "$$2", User: "$$3", Command: "$$1}'; \
+		exit 1; \
+	else \
+		echo "🎉 Port $(PORT) is not in use. let's go!"; \
+	fi
