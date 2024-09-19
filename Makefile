@@ -38,18 +38,6 @@ oas_ts_fetch:
     --additional-properties withSeparateModelsAndApi=true \
 		--additional-properties enumPropertyNaming=PascalCase
 
-# やってはみたものの導入方法がよくわからない
-__oas_go_kiota:
-	docker run --rm -v ${current_dir}:/local \
-	mcr.microsoft.com/openapi/kiota \
-	generate --language go \
-	--openapi /local/openapi.yml \
-	-o /local/kiota_test \
-	-n sample/go-react-local-app/openapi
-
-# oganを使いたいがginにうまく組み込むやり方がわからない
-oas_ogen:
-	ogen -package openapi -target ${current_dir}/internal/ogen_openapi -clean ${current_dir}/openapi.yml
 
 copy_data:
 	cp -r ./data ./bin/$(PLATFORM)/

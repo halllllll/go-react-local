@@ -1,4 +1,4 @@
-openapi: "3.0.3"
+openapi: "3.1.0"
 info:
   title: "Go x React local"
   description: "practice environment on local server development"
@@ -12,11 +12,11 @@ servers:
       port:
         default: '3056'
 tags:
-  - name: "count"
+  - name: count
     description: "count api"
 
 paths:
-  "/count":
+  /count:
     get:
       summary: "get all count data"
       description: "get all count whole data"
@@ -87,7 +87,7 @@ paths:
                 $ref: '#/components/schemas/Error'
 
 
-  "/count/{count_id}":
+  /count/{count_id}:
     get:
       summary: "get a count"
       description: "get a count"
@@ -102,7 +102,7 @@ paths:
           schema:
             type: integer
       responses:
-        "200":
+        200:
           description: "ok"
           content:
             application/json:
@@ -145,12 +145,12 @@ components:
           type: string
           format: date-time
           description: "creation data"
-          example: "2024-02-02T14:17:19Z"
+          example: 2024-02-02T14:17:19Z
         updated:
           type: string
           format: date-time
           description: "update data"
-          example: "2024-02-02T14:17:19Z"
+          example: 2024-02-02T14:17:19Z
       required:
         - id
         - value

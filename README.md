@@ -2,8 +2,6 @@ my implement the great awesome repository [danhawkins/go-vite-react-example](htt
 
 Info: [https://dev.to/danhawkins/embed-vite-react-in-golang-binary-with-live-reload-1k4d](https://dev.to/danhawkins/embed-vite-react-in-golang-binary-with-live-reload-1k4d)
 
-# Note
-いまのところコンパイルはビルドしているOSのみに対応（Dockerからwin/macへクロスコンパイルする方法がわからない）
 
 # Diff
 
